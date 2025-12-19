@@ -1,20 +1,12 @@
 import { db } from "./firebase-client";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
-// fixed 3 columns
-const COLUMNS = ["Backlog", "In Progress", "Completed"];
+export const COLUMN_ORDER = ["Backlog", "In Progress", "Done"];
 
 export async function createBoard(): Promise<string> {
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   const ref = doc(db, "boards", code);
-  // always 3 fixed columns
-  await setDoc(ref, {
-    columns: {
-      Backlog: [],
-      "In Progress": [],
-      Completed: [],
-    },
-  });
+  await setDoc(ref, { columns: { Backlog: [], "In Progress": [], Done: [] } });
   return code;
 }
 
@@ -23,13 +15,13 @@ export async function boardExists(code: string): Promise<boolean> {
   return snap.exists();
 }
 
-export async function addTask(code: string, task: string) {
+export async function addTask(code: string, column: string, task: string) {
   const ref = doc(db, "boards", code);
   const snap = await getDoc(ref);
   if (!snap.exists()) return;
   const data = snap.data();
-  const tasks = [...(data.columns["Backlog"] || []), task];
-  await updateDoc(ref, { "columns.Backlog": tasks });
+  const tasks = [...(data.columns[column] || []), task];
+  await updateDoc(ref, { [`columns.${column}`]: tasks });
 }
 
 export async function deleteTask(
@@ -44,7 +36,6 @@ export async function deleteTask(
   await updateDoc(ref, { [`columns.${column}`]: newTasks });
 }
 
-// move task left/right deterministically within the 3 columns
 export async function moveTask(
   code: string,
   fromColumn: string,
@@ -52,19 +43,24 @@ export async function moveTask(
   taskIndex: number,
   columns: Record<string, string[]>,
 ) {
-  const fromIndex = COLUMNS.indexOf(fromColumn);
+  const normalizedColumns: Record<string, string[]> = {};
+  for (const col of COLUMN_ORDER) {
+    normalizedColumns[col] = columns[col] || [];
+  }
+
+  const fromIndex = COLUMN_ORDER.indexOf(fromColumn);
   if (fromIndex === -1) return;
 
   const toIndex = direction === "left" ? fromIndex - 1 : fromIndex + 1;
-  if (toIndex < 0 || toIndex >= COLUMNS.length) return; // can't move outside
+  if (toIndex < 0 || toIndex >= COLUMN_ORDER.length) return;
 
-  const toColumn = COLUMNS[toIndex];
-  const task = columns[fromColumn][taskIndex];
+  const toColumn = COLUMN_ORDER[toIndex];
+  const task = normalizedColumns[fromColumn][taskIndex];
 
-  const nextFrom = [...columns[fromColumn]];
+  const nextFrom = [...normalizedColumns[fromColumn]];
   nextFrom.splice(taskIndex, 1);
 
-  const nextTo = [...columns[toColumn], task];
+  const nextTo = [...normalizedColumns[toColumn], task];
 
   await updateDoc(doc(db, "boards", code), {
     [`columns.${fromColumn}`]: nextFrom,

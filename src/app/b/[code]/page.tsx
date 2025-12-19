@@ -4,7 +4,7 @@ import { use } from "react";
 import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "lib/firebase-client";
-import { addTask, deleteTask, moveTask } from "lib/boards";
+import { addTask, deleteTask, moveTask, COLUMN_ORDER } from "lib/boards";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,14 +14,8 @@ import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 type Board = {
-  columns: {
-    Backlog: string[];
-    "In Progress": string[];
-    Completed: string[];
-  };
+  columns: Record<string, string[]>;
 };
-
-const COLUMN_ORDER = ["Backlog", "In Progress", "Completed"];
 
 export default function BoardPage({
   params,
@@ -57,11 +51,13 @@ export default function BoardPage({
               <ArrowLeft size={16} className="mr-1" /> Home
             </Button>
           </Link>
+
           <div>
             <h1 className="text-lg font-medium">Board</h1>
             <p className="text-xs text-muted tracking-widest">{code}</p>
           </div>
         </div>
+
         <Button
           variant="outline"
           size="sm"
@@ -71,14 +67,14 @@ export default function BoardPage({
         </Button>
       </header>
 
-      {/* Single input for Backlog */}
+      {/* Task input */}
       <div className="p-6">
         <form
           className="flex space-x-2"
           onSubmit={(e) => {
             e.preventDefault();
-            if (!taskText.trim()) return;
-            addTask(code, taskText);
+            if (taskText.trim() === "") return;
+            addTask(code, "Backlog", taskText);
             setTaskText("");
           }}
         >
@@ -91,11 +87,11 @@ export default function BoardPage({
         </form>
       </div>
 
-      {/* 3 fixed columns */}
+      {/* Kanban columns */}
       <section className="flex-1 overflow-x-auto p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
           {COLUMN_ORDER.map((col) => {
-            const tasks = board.columns[col];
+            const tasks = board.columns[col] || [];
             return (
               <Card
                 key={col}
@@ -133,7 +129,7 @@ export default function BoardPage({
                                 <ArrowLeft size={16} />
                               </Button>
                             )}
-                            {col !== "Completed" && (
+                            {col !== "Done" && (
                               <Button
                                 variant="outline"
                                 size="xs"
