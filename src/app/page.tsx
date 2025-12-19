@@ -1,15 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createBoard, boardExists } from "lib/boards";
+import { RefreshCw } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
   const [code, setCode] = useState("");
+  const [theme, setTheme] = useState<React.CSSProperties>(
+    {} as React.CSSProperties,
+  );
+
+  // Same color logic as BoardPage for consistency
+  const generateTheme = () => {
+    const h = Math.floor(Math.random() * 360);
+    return {
+      "--dynamic-bg": `hsl(${h}, 50%, 95%)`,
+      "--dynamic-panel": `hsl(${h}, 30%, 90%)`,
+      "--dynamic-fg": `hsl(${h}, 50%, 10%)`,
+      "--dynamic-primary": `hsl(${h}, 70%, 40%)`,
+      "--dynamic-border": `hsl(${h}, 30%, 80%)`,
+    } as React.CSSProperties;
+  };
+
+  useEffect(() => {
+    setTheme(generateTheme());
+  }, []);
 
   async function handleCreate() {
     const newCode = await createBoard();
@@ -24,31 +44,71 @@ export default function Home() {
   }
 
   return (
-    <main className="h-full flex items-center justify-center px-4">
-      <Card className="w-full max-w-sm bg-panel border border-border">
-        <CardHeader className="text-center">
-          <h1 className="text-2xl font-semibold text-fg">TrackHub</h1>
-          <p className="text-sm text-muted">Auth-less Kanban</p>
+    <main
+      style={theme}
+      // h-screen ensures the background covers the entire viewport
+      className="h-screen w-full flex flex-col items-center justify-center p-4 bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500 relative"
+    >
+      {/* Corner re-roll button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-4 right-4 text-[var(--dynamic-primary)] hover:bg-[var(--dynamic-panel)]"
+        onClick={() => setTheme(generateTheme())}
+        title="Re-roll colors"
+      >
+        <RefreshCw size={20} />
+      </Button>
+
+      <Card className="w-full max-w-sm bg-[var(--dynamic-panel)] border-[var(--dynamic-border)] shadow-lg">
+        <CardHeader className="text-center pb-2">
+          <h1 className="text-3xl font-bold text-[var(--dynamic-primary)] tracking-tight">
+            TrackHub
+          </h1>
+          <p className="text-sm opacity-70">Auth-less Kanban</p>
         </CardHeader>
 
-        <CardContent className="space-y-4">
-          <Button className="w-full" onClick={handleCreate}>
-            Create board
+        <CardContent className="space-y-6 pt-4">
+          <Button
+            className="w-full bg-[var(--dynamic-primary)] hover:opacity-90 text-white border-none h-11 text-md"
+            onClick={handleCreate}
+          >
+            Create New Board
           </Button>
 
-          <div className="space-y-2">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-[var(--dynamic-border)]" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-[var(--dynamic-panel)] px-2 opacity-50">
+                Or join existing
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-3">
             <Input
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              placeholder="ENTER CODE"
-              className="tracking-widest text-center uppercase"
+              placeholder="ENTER 6-DIGIT CODE"
+              maxLength={6}
+              className="tracking-[0.25em] text-center uppercase h-11 bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] focus-visible:ring-[var(--dynamic-primary)] placeholder:tracking-normal"
             />
-            <Button variant="outline" className="w-full" onClick={handleJoin}>
-              Join board
+            <Button
+              variant="outline"
+              className="w-full bg-transparent border-[var(--dynamic-border)] hover:bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)]"
+              onClick={handleJoin}
+            >
+              Join Board
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      <p className="absolute bottom-6 text-xs opacity-40">
+        No login required. Just share the code.
+      </p>
     </main>
   );
 }
