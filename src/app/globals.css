@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+:root {
+  --color-bg: #f5f7fa;
+  --color-panel: #ffffff;
+  --color-border: #d1d5db;
+  --color-fg: #1f2937;
+  --color-muted: #6b7280;
+  --color-accent: #3b82f6;
+}
+
+.bg-bg {
+  background-color: var(--color-bg);
+}
+
+.bg-panel {
+  background-color: var(--color-panel);
+}
+
+.border-border {
+  border-color: var(--color-border);
+}
+
+.text-fg {
+  color: var(--color-fg);
+}
+
+.text-muted {
+  color: var(--color-muted);
+  opacity: 0.8;
+}
+
+.bg-accent {
+  background-color: var(--color-accent);
+  color: white;
+}

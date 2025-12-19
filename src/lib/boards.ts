@@ -1,12 +1,20 @@
 import { db } from "./firebase-client";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
-const COLUMN_ORDER = ["todo", "doing", "done"];
+// fixed 3 columns
+const COLUMNS = ["Backlog", "In Progress", "Completed"];
 
 export async function createBoard(): Promise<string> {
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   const ref = doc(db, "boards", code);
-  await setDoc(ref, { columns: { todo: [], doing: [], done: [] } });
+  // always 3 fixed columns
+  await setDoc(ref, {
+    columns: {
+      Backlog: [],
+      "In Progress": [],
+      Completed: [],
+    },
+  });
   return code;
 }
 
@@ -15,13 +23,13 @@ export async function boardExists(code: string): Promise<boolean> {
   return snap.exists();
 }
 
-export async function addTask(code: string, column: string, task: string) {
+export async function addTask(code: string, task: string) {
   const ref = doc(db, "boards", code);
   const snap = await getDoc(ref);
   if (!snap.exists()) return;
   const data = snap.data();
-  const tasks = [...(data.columns[column] || []), task];
-  await updateDoc(ref, { [`columns.${column}`]: tasks });
+  const tasks = [...(data.columns["Backlog"] || []), task];
+  await updateDoc(ref, { "columns.Backlog": tasks });
 }
 
 export async function deleteTask(
@@ -36,6 +44,7 @@ export async function deleteTask(
   await updateDoc(ref, { [`columns.${column}`]: newTasks });
 }
 
+// move task left/right deterministically within the 3 columns
 export async function moveTask(
   code: string,
   fromColumn: string,
@@ -43,13 +52,13 @@ export async function moveTask(
   taskIndex: number,
   columns: Record<string, string[]>,
 ) {
-  const fromIndex = COLUMN_ORDER.indexOf(fromColumn);
+  const fromIndex = COLUMNS.indexOf(fromColumn);
   if (fromIndex === -1) return;
 
   const toIndex = direction === "left" ? fromIndex - 1 : fromIndex + 1;
-  if (toIndex < 0 || toIndex >= COLUMN_ORDER.length) return;
+  if (toIndex < 0 || toIndex >= COLUMNS.length) return; // can't move outside
 
-  const toColumn = COLUMN_ORDER[toIndex];
+  const toColumn = COLUMNS[toIndex];
   const task = columns[fromColumn][taskIndex];
 
   const nextFrom = [...columns[fromColumn]];

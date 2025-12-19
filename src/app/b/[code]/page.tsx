@@ -14,8 +14,14 @@ import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 type Board = {
-  columns: Record<string, string[]>;
+  columns: {
+    Backlog: string[];
+    "In Progress": string[];
+    Completed: string[];
+  };
 };
+
+const COLUMN_ORDER = ["Backlog", "In Progress", "Completed"];
 
 export default function BoardPage({
   params,
@@ -24,6 +30,7 @@ export default function BoardPage({
 }) {
   const { code } = use(params);
   const [board, setBoard] = useState<Board | null>(null);
+  const [taskText, setTaskText] = useState("");
 
   useEffect(() => {
     const ref = doc(db, "boards", code);
@@ -42,6 +49,7 @@ export default function BoardPage({
 
   return (
     <main className="h-full flex flex-col">
+      {/* Header */}
       <header className="border-b border-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/">
@@ -49,13 +57,11 @@ export default function BoardPage({
               <ArrowLeft size={16} className="mr-1" /> Home
             </Button>
           </Link>
-
           <div>
             <h1 className="text-lg font-medium">Board</h1>
             <p className="text-xs text-muted tracking-widest">{code}</p>
           </div>
         </div>
-
         <Button
           variant="outline"
           size="sm"
@@ -65,87 +71,96 @@ export default function BoardPage({
         </Button>
       </header>
 
+      {/* Single input for Backlog */}
+      <div className="p-6">
+        <form
+          className="flex space-x-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!taskText.trim()) return;
+            addTask(code, taskText);
+            setTaskText("");
+          }}
+        >
+          <Input
+            value={taskText}
+            onChange={(e) => setTaskText(e.target.value)}
+            placeholder="Add task to Backlog"
+          />
+          <Button type="submit">Add</Button>
+        </form>
+      </div>
+
+      {/* 3 fixed columns */}
       <section className="flex-1 overflow-x-auto p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
-          {Object.entries(board.columns).map(([col, tasks]) => (
-            <Card
-              key={col}
-              className="flex flex-col h-full bg-panel border border-border"
-            >
-              <CardHeader>
-                <h2 className="text-xs text-fg tracking-widest">
-                  {col.toUpperCase()}
-                </h2>
-              </CardHeader>
+          {COLUMN_ORDER.map((col) => {
+            const tasks = board.columns[col];
+            return (
+              <Card
+                key={col}
+                className="flex flex-col h-full bg-panel border border-border"
+              >
+                <CardHeader>
+                  <h2 className="text-xs text-fg tracking-widest">
+                    {col.toUpperCase()}
+                  </h2>
+                </CardHeader>
 
-              <CardContent className="flex flex-col flex-1 space-y-3">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const input = e.currentTarget.task as HTMLInputElement;
-                    addTask(code, col, input.value);
-                    input.value = "";
-                  }}
-                >
-                  <Input
-                    name="task"
-                    placeholder="Add task"
-                    className="text-sm"
-                  />
-                </form>
+                <CardContent className="flex flex-col flex-1 space-y-3">
+                  <div className="flex-1 flex flex-col space-y-2 overflow-y-auto">
+                    {tasks.length === 0 && (
+                      <p className="text-xs text-muted italic">No tasks</p>
+                    )}
 
-                <div className="flex-1 flex flex-col space-y-2 overflow-y-auto">
-                  {tasks.length === 0 && (
-                    <p className="text-xs text-muted italic">No tasks</p>
-                  )}
+                    {tasks.map((task, i) => (
+                      <Card
+                        key={i}
+                        className="p-3 flex flex-col space-y-2 border-border"
+                      >
+                        <p className="text-sm">{task}</p>
 
-                  {tasks.map((task, i) => (
-                    <Card
-                      key={i}
-                      className="p-3 flex flex-col space-y-2 border-border"
-                    >
-                      <p className="text-sm">{task}</p>
+                        <div className="flex justify-between text-xs text-muted">
+                          <div className="flex space-x-2">
+                            {col !== "Backlog" && (
+                              <Button
+                                variant="outline"
+                                size="xs"
+                                onClick={() =>
+                                  moveTask(code, col, "left", i, board.columns)
+                                }
+                              >
+                                <ArrowLeft size={16} />
+                              </Button>
+                            )}
+                            {col !== "Completed" && (
+                              <Button
+                                variant="outline"
+                                size="xs"
+                                onClick={() =>
+                                  moveTask(code, col, "right", i, board.columns)
+                                }
+                              >
+                                <ArrowRight size={16} />
+                              </Button>
+                            )}
+                          </div>
 
-                      <div className="flex justify-between text-xs text-muted">
-                        <div className="flex space-x-2">
-                          {col !== "todo" && (
-                            <Button
-                              variant="outline"
-                              size="xs"
-                              onClick={() =>
-                                moveTask(code, col, "left", i, board.columns)
-                              }
-                            >
-                              <ArrowLeft size={16} />
-                            </Button>
-                          )}
-                          {col !== "done" && (
-                            <Button
-                              variant="outline"
-                              size="xs"
-                              onClick={() =>
-                                moveTask(code, col, "right", i, board.columns)
-                              }
-                            >
-                              <ArrowRight size={16} />
-                            </Button>
-                          )}
+                          <Button
+                            variant="destructive"
+                            size="xs"
+                            onClick={() => deleteTask(code, col, i, tasks)}
+                          >
+                            <Trash2 size={16} />
+                          </Button>
                         </div>
-
-                        <Button
-                          variant="destructive"
-                          size="xs"
-                          onClick={() => deleteTask(code, col, i, tasks)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </section>
     </main>
