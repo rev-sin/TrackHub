@@ -9,7 +9,7 @@ import { addTask, deleteTask, moveTask, COLUMN_ORDER } from "lib/boards";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight, Trash2, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Trash2, RefreshCw, Github } from "lucide-react";
 import Link from "next/link";
 
 type Board = {
@@ -80,7 +80,20 @@ export default function BoardPage({
               <ArrowLeft size={16} className="mr-1" /> Home
             </Button>
           </Link>
-
+          <a
+            href="https://github.com/rev-sin/trackhub"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] hover:bg-[var(--dynamic-panel)] text-[var(--dynamic-fg)]"
+            >
+              <Github size={16} className="mr-2" />
+              GitHub
+            </Button>
+          </a>
           <div>
             <h1 className="text-lg font-bold text-[var(--dynamic-primary)]">
               Board

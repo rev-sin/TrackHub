@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createBoard, boardExists } from "lib/boards";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Github } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
@@ -59,7 +59,6 @@ export default function Home() {
       >
         <RefreshCw size={20} />
       </Button>
-
       <Card className="w-full max-w-sm bg-[var(--dynamic-panel)] border-[var(--dynamic-border)] shadow-lg">
         <CardHeader className="text-center pb-2">
           <h1 className="text-3xl font-bold text-[var(--dynamic-primary)] tracking-tight">
@@ -95,6 +94,7 @@ export default function Home() {
               maxLength={6}
               className="tracking-[0.25em] text-center uppercase h-11 bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] focus-visible:ring-[var(--dynamic-primary)] placeholder:tracking-normal"
             />
+
             <Button
               variant="outline"
               className="w-full bg-transparent border-[var(--dynamic-border)] hover:bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)]"
