@@ -1,7 +1,7 @@
 "use client";
 
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, enableNetwork } from "firebase/firestore";
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { enableNetwork, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,

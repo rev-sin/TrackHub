@@ -1,8 +1,8 @@
 "use client";
 
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase-client";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { generateCode } from "./code";
+import { db } from "./firebase-client";
 
 export async function createBoard(): Promise<string> {
   let code = generateCode();

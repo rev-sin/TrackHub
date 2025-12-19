@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { boardExists, createBoard } from "lib/boards";
 import { useRouter } from "next/navigation";
-import { createBoard, boardExists } from "lib/boards";
+import { useState } from "react";
 
 export default function Home() {
   const router = useRouter();

@@ -1,9 +1,8 @@
 "use client";
 
-import { use } from "react";
-import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "lib/firebase-client";
+import { use, useEffect, useState } from "react";
 
 type Board = {
   columns: Record<string, string[]>;
@@ -33,7 +32,7 @@ export default function BoardPage({
         (err) => {
           console.error(err);
           setError("Failed to load board");
-        }
+        },
       );
     } catch (e) {
       console.error(e);
