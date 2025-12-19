@@ -180,8 +180,7 @@ export default function BoardPage({
                             {col !== "Backlog" && (
                               <Button
                                 variant="ghost"
-                                size="xs"
-                                className="h-6 w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
+                                className="xs h-6 w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
                                 onClick={() =>
                                   moveTask(code, col, "left", i, board.columns)
                                 }
@@ -192,7 +191,6 @@ export default function BoardPage({
                             {col !== "Done" && (
                               <Button
                                 variant="ghost"
-                                size="xs"
                                 className="h-6 w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
                                 onClick={() =>
                                   moveTask(code, col, "right", i, board.columns)
@@ -205,7 +203,6 @@ export default function BoardPage({
 
                           <Button
                             variant="ghost"
-                            size="xs"
                             className="h-6 w-6 p-0 hover:bg-red-500 hover:text-white"
                             onClick={() => deleteTask(code, col, i, tasks)}
                           >
