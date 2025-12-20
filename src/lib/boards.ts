@@ -1,5 +1,5 @@
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase-client";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 export const COLUMN_ORDER = ["Backlog", "In Progress", "Done"];
 

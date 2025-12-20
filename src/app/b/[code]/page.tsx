@@ -1,16 +1,14 @@
 "use client";
 
-import { use } from "react";
-import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
+import { addTask, COLUMN_ORDER, deleteTask, moveTask } from "lib/boards";
 import { db } from "lib/firebase-client";
-import { addTask, deleteTask, moveTask, COLUMN_ORDER } from "lib/boards";
-
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight, Trash2, RefreshCw, Github } from "lucide-react";
+import { ArrowLeft, ArrowRight, Github, RefreshCw, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { use, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 type Board = {
   columns: Record<string, string[]>;

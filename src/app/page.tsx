@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { boardExists, createBoard } from "lib/boards";
+import { RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { createBoard, boardExists } from "lib/boards";
-import { RefreshCw, Github } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
@@ -15,7 +15,6 @@ export default function Home() {
     {} as React.CSSProperties,
   );
 
-  // Same color logic as BoardPage for consistency
   const generateTheme = () => {
     const h = Math.floor(Math.random() * 360);
     return {
@@ -46,10 +45,8 @@ export default function Home() {
   return (
     <main
       style={theme}
-      // h-screen ensures the background covers the entire viewport
       className="h-screen w-full flex flex-col items-center justify-center p-4 bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500 relative"
     >
-      {/* Corner re-roll button */}
       <Button
         variant="ghost"
         size="icon"

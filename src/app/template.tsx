@@ -1,24 +1,23 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { cubicBezier, motion } from "framer-motion";
 
-// --- THE LUXURY SLIDE ---
 const slowSlide = {
   initial: {
-    x: "20%", // Start slightly to the right
-    opacity: 0, // Start transparent
+    x: "20%",
+    opacity: 0,
   },
   animate: {
-    x: "0%", // Slide to center
-    opacity: 1, // Fade in
+    x: "0%",
+    opacity: 1,
     transition: {
-      duration: 1.5, // 1.5 seconds (Slow)
-      ease: [0.22, 1, 0.36, 1], // Custom "Ease Out Quart" curve (starts fast, lands soft)
+      duration: 1.5,
+      ease: cubicBezier(0.22, 1, 0.36, 1),
     },
   },
   exit: {
     opacity: 0,
-    x: "-10%", // Slide slightly left on exit
+    x: "-10%",
     transition: { duration: 0.5 },
   },
 };
