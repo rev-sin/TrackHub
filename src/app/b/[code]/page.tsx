@@ -62,11 +62,8 @@ export default function BoardPage({
   return (
     <main
       style={theme}
-      // 1. h-screen: Force full viewport height
-      // 2. overflow-hidden: Stop the body from scrolling
       className="h-screen flex flex-col overflow-hidden bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500"
     >
-      {/* Header - Fixed height */}
       <header className="flex-none border-b border-[var(--dynamic-border)] px-6 py-4 flex items-center justify-between bg-[var(--dynamic-panel)]/50 backdrop-blur-sm">
         <div className="flex items-center space-x-4">
           <Link href="/">
@@ -109,7 +106,7 @@ export default function BoardPage({
             onClick={() => setTheme(generateTheme())}
             className="bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] hover:bg-[var(--dynamic-panel)] text-[var(--dynamic-fg)]"
           >
-            <RefreshCw size={16} className="mr-2" /> Re-roll Colors
+            <RefreshCw size={16} />
           </Button>
 
           <Button
@@ -123,7 +120,6 @@ export default function BoardPage({
         </div>
       </header>
 
-      {/* Input Area - Fixed height */}
       <div className="flex-none p-6">
         <form
           className="flex space-x-2 max-w-lg mx-auto"
@@ -149,9 +145,6 @@ export default function BoardPage({
         </form>
       </div>
 
-      {/* Kanban Columns Section - Takes remaining space */}
-      {/* flex-1: Grow to fill space */}
-      {/* min-h-0: Essential for nested scrolling in Flexbox */}
       <section className="flex-1 min-h-0 overflow-x-auto px-6 pb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full min-w-[800px] md:min-w-0">
           {COLUMN_ORDER.map((col) => {
@@ -159,7 +152,6 @@ export default function BoardPage({
             return (
               <Card
                 key={col}
-                // h-full here ensures the card stretches to the bottom of the section
                 className="flex flex-col h-full bg-[var(--dynamic-panel)] border-[var(--dynamic-border)] shadow-sm"
               >
                 <CardHeader className="flex-none pb-3 border-b border-[var(--dynamic-border)]">
@@ -168,10 +160,7 @@ export default function BoardPage({
                   </h2>
                 </CardHeader>
 
-                {/* CardContent: flex-1 allows it to fill the card */}
-                {/* min-h-0 ensures the internal scroll works */}
                 <CardContent className="flex flex-col flex-1 min-h-0 space-y-3 pt-3">
-                  {/* Internal Scroll Container */}
                   <div className="flex-1 overflow-y-auto pr-2 space-y-2">
                     {tasks.length === 0 && (
                       <div className="h-full flex items-center justify-center opacity-50">
