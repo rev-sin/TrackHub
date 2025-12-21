@@ -11,7 +11,6 @@ export default function NotFound() {
     {} as React.CSSProperties,
   );
 
-  // Wrapped in useCallback to prevent useEffect dependency warnings
   const generateTheme = useCallback(() => {
     const h = Math.floor(Math.random() * 360);
     return {
@@ -32,7 +31,6 @@ export default function NotFound() {
       style={theme}
       className="h-screen w-full flex flex-col items-center justify-center p-4 bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500 relative"
     >
-      {/* Re-roll button kept for consistency/fun */}
       <Button
         variant="ghost"
         size="icon"

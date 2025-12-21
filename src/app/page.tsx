@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader } from "components/ui/card";
-import { generateTheme } from "lib/theme";
-
-// Components
 import { CreateButton } from "components/home/create-button";
 import { JoinForm } from "components/home/join-form";
 import { ThemeToggle } from "components/home/theme-toggle";
+import { Card, CardContent, CardHeader } from "components/ui/card";
+import { generateTheme } from "lib/theme";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [theme, setTheme] = useState<React.CSSProperties>(

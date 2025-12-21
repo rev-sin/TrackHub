@@ -1,7 +1,6 @@
 "use client";
 
 import { BoardColumn } from "components/board/board-column";
-// Components
 import { BoardHeader } from "components/board/board-header";
 import { TaskInput } from "components/board/task-input";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -22,12 +21,10 @@ export default function BoardPage({
     {} as React.CSSProperties,
   );
 
-  // Initial Theme Setup
   useEffect(() => {
     setTheme(generateTheme());
   }, []);
 
-  // Firestore Subscription
   useEffect(() => {
     const ref = doc(db, "boards", code);
     return onSnapshot(ref, (snap) => {
@@ -35,7 +32,6 @@ export default function BoardPage({
     });
   }, [code]);
 
-  // Loading State
   if (!board) {
     return (
       <div

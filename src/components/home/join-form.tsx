@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "components/ui/input-otp";
 import { boardExists } from "lib/boards";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function JoinForm() {
   const router = useRouter();

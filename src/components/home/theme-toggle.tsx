@@ -1,6 +1,6 @@
 import { Button } from "components/ui/button";
-import { RefreshCw } from "lucide-react";
 import { generateTheme } from "lib/theme";
+import { RefreshCw } from "lucide-react";
 
 interface ThemeToggleProps {
   onThemeChange: (theme: React.CSSProperties) => void;
