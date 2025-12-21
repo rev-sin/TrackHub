@@ -6,7 +6,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 export default function Home() {
   const router = useRouter();
@@ -83,19 +87,28 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <Input
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="ENTER 6-DIGIT CODE"
+          <div className="space-y-3 flex flex-col items-center">
+            <InputOTP
               maxLength={6}
-              className="tracking-[0.25em] text-center uppercase h-11 bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] focus-visible:ring-[var(--dynamic-primary)] placeholder:tracking-normal"
-            />
+              value={code}
+              onChange={(value) => setCode(value)}
+            >
+              <InputOTPGroup>
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className="h-12 w-10 text-lg uppercase bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] focus:ring-[var(--dynamic-primary)]"
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
 
             <Button
               variant="outline"
-              className="w-full bg-transparent border-[var(--dynamic-border)] hover:bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)]"
+              className="w-full bg-transparent border-[var(--dynamic-border)] hover:bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] mt-2"
               onClick={handleJoin}
+              disabled={code.length < 6}
             >
               Join Board
             </Button>
