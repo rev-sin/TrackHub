@@ -1,7 +1,7 @@
 import { Button } from "components/ui/button";
+import { generateTheme } from "lib/theme";
 import { ArrowLeft, Github, RefreshCw } from "lucide-react";
 import Link from "next/link";
-import { generateTheme } from "lib/theme";
 
 interface BoardHeaderProps {
   code: string;

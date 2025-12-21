@@ -1,16 +1,15 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "lib/firebase-client";
-import { COLUMN_ORDER } from "lib/boards";
-import { generateTheme } from "lib/theme";
-import type { Board } from "lib/types";
-
+import { BoardColumn } from "components/board/board-column";
 // Components
 import { BoardHeader } from "components/board/board-header";
 import { TaskInput } from "components/board/task-input";
-import { BoardColumn } from "components/board/board-column";
+import { doc, onSnapshot } from "firebase/firestore";
+import { COLUMN_ORDER } from "lib/boards";
+import { db } from "lib/firebase-client";
+import { generateTheme } from "lib/theme";
+import type { Board } from "lib/types";
+import { use, useEffect, useState } from "react";
 
 export default function BoardPage({
   params,

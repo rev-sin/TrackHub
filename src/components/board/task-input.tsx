@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { addTask } from "lib/boards";
+import { useState } from "react";
 
 interface TaskInputProps {
   code: string;
