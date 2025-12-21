@@ -4,13 +4,13 @@ import { boardExists, createBoard } from "lib/boards";
 import { RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "components/ui/button";
+import { Card, CardContent, CardHeader } from "components/ui/card";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from "components/ui/input-otp";
 
 export default function Home() {
   const router = useRouter();
