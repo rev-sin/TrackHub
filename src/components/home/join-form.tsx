@@ -2,6 +2,7 @@
 
 import { Button } from "components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "components/ui/input-otp";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { boardExists } from "lib/boards";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +20,13 @@ export function JoinForm() {
 
   return (
     <div className="space-y-3 flex flex-col items-center">
-      <InputOTP maxLength={6} value={code} onChange={(value) => setCode(value)}>
+      <InputOTP
+        maxLength={6}
+        value={code}
+        onChange={(value) => setCode(value)}
+        pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+        inputMode="text"
+      >
         <InputOTPGroup>
           {Array.from({ length: 6 }).map((_, index) => (
             <InputOTPSlot
