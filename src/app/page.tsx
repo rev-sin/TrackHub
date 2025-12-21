@@ -10,7 +10,9 @@ import { JoinForm } from "components/home/join-form";
 import { ThemeToggle } from "components/home/theme-toggle";
 
 export default function Home() {
-  const [theme, setTheme] = useState<React.CSSProperties>({} as React.CSSProperties);
+  const [theme, setTheme] = useState<React.CSSProperties>(
+    {} as React.CSSProperties,
+  );
 
   useEffect(() => {
     setTheme(generateTheme());
@@ -21,8 +23,8 @@ export default function Home() {
       style={theme}
       className="h-screen w-full flex flex-col items-center justify-center p-4 bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500 relative"
     >
-      <ThemeToggle 
-        onThemeChange={setTheme} 
+      <ThemeToggle
+        onThemeChange={setTheme}
         className="absolute top-4 right-4 text-[var(--dynamic-primary)] hover:bg-[var(--dynamic-panel)]"
       />
 

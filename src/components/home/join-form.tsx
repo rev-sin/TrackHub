@@ -19,11 +19,7 @@ export function JoinForm() {
 
   return (
     <div className="space-y-3 flex flex-col items-center">
-      <InputOTP
-        maxLength={6}
-        value={code}
-        onChange={(value) => setCode(value)}
-      >
+      <InputOTP maxLength={6} value={code} onChange={(value) => setCode(value)}>
         <InputOTPGroup>
           {Array.from({ length: 6 }).map((_, index) => (
             <InputOTPSlot
