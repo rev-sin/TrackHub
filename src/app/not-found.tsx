@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "components/ui/button";
+import { Card, CardContent, CardHeader } from "components/ui/card";
 import { FileQuestion, Home as HomeIcon, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "components/ui/button";
-import { Card, CardContent, CardHeader } from "components/ui/card";
 
 export default function NotFound() {
   const [theme, setTheme] = useState<React.CSSProperties>(

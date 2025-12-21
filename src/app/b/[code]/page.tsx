@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "components/ui/button";
+import { Card, CardContent, CardHeader } from "components/ui/card";
+import { Input } from "components/ui/input";
 import { doc, onSnapshot } from "firebase/firestore";
 import { addTask, COLUMN_ORDER, deleteTask, moveTask } from "lib/boards";
 import { db } from "lib/firebase-client";
@@ -14,9 +17,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import { Button } from "components/ui/button";
-import { Card, CardContent, CardHeader } from "components/ui/card";
-import { Input } from "components/ui/input";
 
 type Board = {
   columns: Record<string, string[]>;
