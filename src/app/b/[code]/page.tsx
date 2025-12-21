@@ -3,7 +3,15 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { addTask, COLUMN_ORDER, deleteTask, moveTask } from "lib/boards";
 import { db } from "lib/firebase-client";
-import { ArrowLeft, ArrowRight, Github, RefreshCw, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  Github,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -51,7 +59,7 @@ export default function BoardPage({
   if (!board) {
     return (
       <div
-        className="h-screen w-full flex items-center justify-center text-muted"
+        className="h-[100dvh] w-full flex items-center justify-center text-muted"
         style={theme}
       >
         Loading board…
@@ -62,17 +70,18 @@ export default function BoardPage({
   return (
     <main
       style={theme}
-      className="h-screen flex flex-col overflow-hidden bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500"
+      className="h-[100dvh] flex flex-col overflow-hidden bg-[var(--dynamic-bg)] text-[var(--dynamic-fg)] transition-colors duration-500"
     >
-      <header className="flex-none border-b border-[var(--dynamic-border)] px-6 py-4 flex items-center justify-between bg-[var(--dynamic-panel)]/50 backdrop-blur-sm">
-        <div className="flex items-center space-x-4">
+      <header className="flex-none border-b border-[var(--dynamic-border)] px-4 md:px-6 py-4 flex flex-wrap gap-4 items-center justify-between bg-[var(--dynamic-panel)]/50 backdrop-blur-sm">
+        <div className="flex items-center gap-2 md:gap-4 flex-wrap">
           <Link href="/">
             <Button
               variant="outline"
               size="sm"
               className="bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] hover:bg-[var(--dynamic-panel)]"
             >
-              <ArrowLeft size={16} className="mr-1" /> Home
+              <ArrowLeft size={16} className="mr-1" />{" "}
+              <span className="hidden sm:inline">Home</span>
             </Button>
           </Link>
           <a
@@ -86,14 +95,14 @@ export default function BoardPage({
               className="bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] hover:bg-[var(--dynamic-panel)] text-[var(--dynamic-fg)]"
             >
               <Github size={16} className="mr-2" />
-              GitHub
+              <span className="hidden sm:inline">GitHub</span>
             </Button>
           </a>
           <div>
-            <h1 className="text-lg font-bold text-[var(--dynamic-primary)]">
+            <h1 className="text-base md:text-lg font-bold text-[var(--dynamic-primary)] leading-tight">
               Board
             </h1>
-            <p className="text-xs opacity-70 font-mono tracking-widest uppercase">
+            <p className="text-[10px] md:text-xs opacity-70 font-mono tracking-widest uppercase truncate max-w-[100px] md:max-w-none">
               {code}
             </p>
           </div>
@@ -115,14 +124,15 @@ export default function BoardPage({
             onClick={() => navigator.clipboard.writeText(code)}
             className="bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] hover:bg-[var(--dynamic-panel)] text-[var(--dynamic-fg)]"
           >
-            Copy code
+            <span className="hidden sm:inline">Copy code</span>
+            <span className="sm:hidden">Copy</span>
           </Button>
         </div>
       </header>
 
-      <div className="flex-none p-6">
+      <div className="flex-none p-4 md:p-6">
         <form
-          className="flex space-x-2 max-w-lg mx-auto"
+          className="flex space-x-2 w-full max-w-lg mx-auto"
           onSubmit={(e) => {
             e.preventDefault();
             if (taskText.trim() === "") return;
@@ -133,30 +143,36 @@ export default function BoardPage({
           <Input
             value={taskText}
             onChange={(e) => setTaskText(e.target.value)}
-            placeholder="Add task to Backlog"
+            placeholder="Add task..."
             className="bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] focus-visible:ring-[var(--dynamic-primary)]"
           />
           <Button
             type="submit"
-            className="bg-[var(--dynamic-primary)] hover:opacity-90 text-white border-none"
+            className="bg-[var(--dynamic-primary)] hover:opacity-90 text-white border-none shrink-0"
           >
             Add
           </Button>
         </form>
       </div>
 
-      <section className="flex-1 min-h-0 overflow-x-auto px-6 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full min-w-[800px] md:min-w-0">
+      {/* Container:
+         - Mobile: overflow-y-auto (page scroll), h-auto
+         - Desktop: overflow-hidden (fixed), h-full (so columns can scroll internally)
+      */}
+      <section className="flex-1 min-h-0 overflow-y-auto md:overflow-hidden px-4 md:px-6 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:h-full">
           {COLUMN_ORDER.map((col) => {
             const tasks = board.columns[col] || [];
             return (
               <Card
                 key={col}
-                className="flex flex-col h-full bg-[var(--dynamic-panel)] border-[var(--dynamic-border)] shadow-sm"
+                // Mobile: h-[500px] fixed height with internal scroll. Desktop: h-full.
+                className="flex flex-col h-[500px] md:h-full bg-[var(--dynamic-panel)] border-[var(--dynamic-border)] shadow-sm"
               >
                 <CardHeader className="flex-none pb-3 border-b border-[var(--dynamic-border)]">
                   <h2 className="text-xs font-bold text-[var(--dynamic-primary)] tracking-widest uppercase">
-                    {col}
+                    {col}{" "}
+                    <span className="opacity-50 ml-2">({tasks.length})</span>
                   </h2>
                 </CardHeader>
 
@@ -171,39 +187,54 @@ export default function BoardPage({
                     {tasks.map((task, i) => (
                       <Card
                         key={i}
-                        className="flex-none p-3 flex flex-col space-y-2 bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] shadow-sm"
+                        className="flex-none p-3 flex flex-col space-y-2 bg-[var(--dynamic-bg)] border-[var(--dynamic-border)] shadow-sm active:scale-95 transition-transform"
                       >
-                        <p className="text-sm font-medium">{task}</p>
+                        <p className="text-sm font-medium break-words">
+                          {task}
+                        </p>
 
                         <div className="flex justify-between text-xs opacity-70 pt-2">
                           <div className="flex space-x-1">
                             {col !== "Backlog" && (
                               <Button
                                 variant="ghost"
-                                className="xs h-6 w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
+                                size="icon"
+                                className="h-8 w-8 md:h-6 md:w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
                                 onClick={() =>
                                   moveTask(code, col, "left", i, board.columns)
                                 }
                               >
-                                <ArrowLeft size={14} />
+                                {/* Mobile: Up Arrow (Prev stage). Desktop: Left Arrow */}
+                                <ArrowUp size={14} className="md:hidden" />
+                                <ArrowLeft
+                                  size={14}
+                                  className="hidden md:block"
+                                />
                               </Button>
                             )}
                             {col !== "Done" && (
                               <Button
                                 variant="ghost"
-                                className="h-6 w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
+                                size="icon"
+                                className="h-8 w-8 md:h-6 md:w-6 p-0 hover:bg-[var(--dynamic-primary)] hover:text-white"
                                 onClick={() =>
                                   moveTask(code, col, "right", i, board.columns)
                                 }
                               >
-                                <ArrowRight size={14} />
+                                {/* Mobile: Down Arrow (Next stage). Desktop: Right Arrow */}
+                                <ArrowDown size={14} className="md:hidden" />
+                                <ArrowRight
+                                  size={14}
+                                  className="hidden md:block"
+                                />
                               </Button>
                             )}
                           </div>
 
                           <Button
                             variant="ghost"
-                            className="h-6 w-6 p-0 hover:bg-red-500 hover:text-white"
+                            size="icon"
+                            className="h-8 w-8 md:h-6 md:w-6 p-0 hover:bg-red-500 hover:text-white"
                             onClick={() => deleteTask(code, col, i, tasks)}
                           >
                             <Trash2 size={14} />
